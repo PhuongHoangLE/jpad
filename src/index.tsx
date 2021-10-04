@@ -10,7 +10,9 @@ const App = () => {
     const [code, setCode] = useState('');
 
     useEffect(() => {
-        esbuild.initialize({ wasmURL: '/esbuild.wasm' }).then(() => setEsbuildReady(true));
+        esbuild
+            .initialize({ wasmURL: 'https://unpkg.com/esbuild-wasm@0.13.3/esbuild.wasm' })
+            .then(() => setEsbuildReady(true));
     }, []);
 
     const onClick = async () => {
