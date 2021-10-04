@@ -14,17 +14,16 @@ const App = () => {
 
     const onClick = async () => {
         if (!esbuildReady) return;
-        // const result = await esbuild.transform(input, {
-        //     loader: 'jsx',
-        //     target: 'es2015',
-        // });
         const result = await esbuild.build({
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
             plugins: [unpkgPathPlugin()],
+            define: {
+                'process.env.NODE_ENV': '"production"',
+                global: 'window',
+            },
         });
-        // console.log(result);
         setCode(result.outputFiles[0].text);
     };
 
