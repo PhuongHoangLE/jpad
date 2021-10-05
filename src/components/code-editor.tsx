@@ -1,7 +1,7 @@
 import './code-editor.css';
 // import './syntax.css';
 import * as monaco from 'monaco-editor';
-import Editor from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
 import { FC, useRef } from 'react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
@@ -53,7 +53,7 @@ const CodeEditor: FC<CodeEditorProps> = ({ initialValue, onChange }) => {
             <button onClick={onFormatClick} className="button button-format is-primary is-small">
                 Prettify
             </button>
-            <Editor
+            <MonacoEditor
                 onChange={onEditorChange}
                 onMount={(editor) => (editorRef.current = editor)}
                 value={initialValue}
