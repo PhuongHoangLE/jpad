@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild-wasm';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { fetchPlugin } from './plugins/fetch-plugin';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
@@ -8,6 +8,30 @@ const App = () => {
     const [esbuildReady, setEsbuildReady] = useState(false);
     const [input, setInput] = useState('');
     const [code, setCode] = useState('');
+    const iframe = useRef<any>();
+    const html = `
+    <html>
+        <head></head>
+        <body>
+            <div id="root"></div>
+            <script>
+                window.addEventListener(
+                    'message',
+                    (event) => {
+                        try {
+                            eval(event.data);
+                        } catch (error) {
+                            const root = document.getElementById('root');
+                            root.innerHTML = '<div>' + '<h4 style="color: red">Runtime Error</h4>' + error + '</div>';
+                            console.error(error);
+                        }
+                    },
+                    false
+                );
+            </script>
+        </body>
+    </html>
+    `;
 
     useEffect(() => {
         esbuild
@@ -17,6 +41,7 @@ const App = () => {
 
     const onClick = async () => {
         if (!esbuildReady) return;
+        iframe.current.srcdoc = html;
         const result = await esbuild.build({
             entryPoints: ['index.js'],
             bundle: true,
@@ -27,16 +52,28 @@ const App = () => {
                 global: 'window',
             },
         });
-        setCode(result.outputFiles[0].text);
+        iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*');
+        // setCode(result.outputFiles[0].text);
     };
 
     return (
         <div>
-            <textarea value={input} onChange={(e) => setInput(e.target.value)}></textarea>
+            <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                style={{ width: '100%', height: '5em' }}
+            ></textarea>
             <div>
                 <button onClick={onClick}>Submit</button>
             </div>
-            <pre>{code}</pre>
+            <br />
+            <iframe
+                ref={iframe}
+                sandbox="allow-scripts"
+                srcDoc={html}
+                title="sandbox"
+                style={{ width: '100%', height: '660px', border: 0 }}
+            ></iframe>
         </div>
     );
 };
