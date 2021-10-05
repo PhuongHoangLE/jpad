@@ -9,6 +9,13 @@
     width: 100%;
 }
 
+.preview-error {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    color: crimson;
+}
+
 .react-draggable-transparent-selection .preview-wrapper:after {
     content: '';
     position: absolute;

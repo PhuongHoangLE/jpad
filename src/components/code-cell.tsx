@@ -9,11 +9,13 @@ const initialInput = "console.log('Hi there! 👋');";
 const CodeCell = () => {
     const [input, setInput] = useState(initialInput);
     const [code, setCode] = useState('');
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const timer = setTimeout(async () => {
-            const output = await bundle(input);
-            setCode(output);
+            const { code, error } = await bundle(input);
+            setCode(code);
+            setError(error);
         }, 1000);
         return () => clearTimeout(timer);
     }, [input]);
@@ -24,7 +26,7 @@ const CodeCell = () => {
                 <Resizable direction="horizontal">
                     <CodeEditor initialValue={initialInput} onChange={(value) => setInput(value)} />
                 </Resizable>
-                <Preview code={code} />
+                <Preview code={code} error={error} />
             </div>
         </Resizable>
     );
