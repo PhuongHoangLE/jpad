@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { fetchPlugin } from './plugins/fetch-plugin';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
+import CodeEditor from './components/code-editor';
 
 const App = () => {
     const [esbuildReady, setEsbuildReady] = useState(false);
-    const [input, setInput] = useState('');
-    const [code, setCode] = useState('');
+    const [input, setInput] = useState<string | undefined>('');
+    // const [code, setCode] = useState('');
     const iframe = useRef<any>();
     const html = `
     <html>
@@ -39,7 +40,7 @@ const App = () => {
             .then(() => setEsbuildReady(true));
     }, []);
 
-    const onClick = async () => {
+    const onClick = async (input: string) => {
         if (!esbuildReady) return;
         iframe.current.srcdoc = html;
         const result = await esbuild.build({
@@ -58,15 +59,19 @@ const App = () => {
 
     return (
         <div>
+            <CodeEditor initialValue="const a = 1" onChange={(value) => setInput(value)} />
             <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                    onClick(e.target.value);
+                    setInput(e.target.value);
+                }}
                 style={{ width: '100%', height: '5em' }}
             ></textarea>
-            <div>
+            {/* <div>
                 <button onClick={onClick}>Submit</button>
             </div>
-            <br />
+            <br /> */}
             <iframe
                 ref={iframe}
                 sandbox="allow-scripts"
