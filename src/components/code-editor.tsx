@@ -1,6 +1,5 @@
 import './code-editor.css';
 // import './syntax.css';
-import 'bulmaswatch/superhero/bulmaswatch.min.css';
 import * as monaco from 'monaco-editor';
 import Editor from '@monaco-editor/react';
 import { FC, useRef } from 'react';
