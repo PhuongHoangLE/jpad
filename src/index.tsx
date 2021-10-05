@@ -40,7 +40,7 @@ const App = () => {
             .then(() => setEsbuildReady(true));
     }, []);
 
-    const onClick = async (input: string) => {
+    const onClick = async () => {
         if (!esbuildReady) return;
         iframe.current.srcdoc = html;
         const result = await esbuild.build({
@@ -60,18 +60,18 @@ const App = () => {
     return (
         <div>
             <CodeEditor initialValue="const a = 1" onChange={(value) => setInput(value)} />
-            <textarea
+            {/* <textarea
                 value={input}
                 onChange={(e) => {
                     onClick(e.target.value);
                     setInput(e.target.value);
                 }}
                 style={{ width: '100%', height: '5em' }}
-            ></textarea>
-            {/* <div>
+            ></textarea> */}
+            <div>
                 <button onClick={onClick}>Submit</button>
             </div>
-            <br /> */}
+            <br />
             <iframe
                 ref={iframe}
                 sandbox="allow-scripts"

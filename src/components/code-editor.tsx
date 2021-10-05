@@ -1,9 +1,14 @@
+import './code-editor.css';
+// import './syntax.css';
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor';
 import Editor from '@monaco-editor/react';
 import { FC, useRef } from 'react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
+import { parse } from '@babel/parser';
+import traverse from '@babel/traverse';
+import Highlighter from 'monaco-jsx-highlighter';
 
 interface CodeEditorProps {
     initialValue: string;
@@ -16,22 +21,41 @@ const CodeEditor: FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     const onFormatClick = () => {
         const unformatted = editor?.getModel()?.getValue();
         if (!unformatted) return;
-        const formatted = prettier.format(unformatted, {
-            parser: 'babel',
-            plugins: [parser],
-            useTabs: false,
-            semi: true,
-            singleQuote: true,
-        });
+        const formatted = prettier
+            .format(unformatted, {
+                parser: 'babel',
+                plugins: [parser],
+                useTabs: false,
+                semi: true,
+                singleQuote: true,
+            })
+            .replace(/\n$/, '');
         editor?.setValue(formatted);
     };
+    const onEditorChange = (value: string | undefined): void => {
+        onChange(value);
+        if (!editor) return;
+        const highlighter = new Highlighter(
+            monaco,
+            (code: string) => parse(code, { sourceType: 'module', plugins: ['jsx'] }),
+            traverse,
+            editor
+        );
+        highlighter.highLightOnDidChangeModelContent(
+            100,
+            () => {},
+            () => {},
+            undefined,
+            () => {}
+        );
+    };
     return (
-        <>
+        <div className="editor-wrapper">
             <button onClick={onFormatClick} className="button button-format is-primary is-small">
-                Format
+                Prettify
             </button>
             <Editor
-                onChange={onChange}
+                onChange={onEditorChange}
                 onMount={(editor) => (editorRef.current = editor)}
                 value={initialValue}
                 height="550px"
@@ -49,7 +73,7 @@ const CodeEditor: FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                     tabSize: 2,
                 }}
             />
-        </>
+        </div>
     );
 };
 
