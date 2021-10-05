@@ -8,7 +8,7 @@ interface PreviewProps {
 const html = `
 <html>
     <head>
-        <style>html { background-color: #1E1E1E }</style>
+        <style>html { background-color: #1e1e1e; color: #cecece }</style>
     </head>
     <body>
         <div id="root"></div>
@@ -36,7 +36,9 @@ const Preview: FC<PreviewProps> = ({ code }) => {
 
     useEffect(() => {
         iframe.current.srcdoc = html;
-        iframe.current.contentWindow.postMessage(code, '*');
+        setTimeout(() => {
+            iframe.current.contentWindow.postMessage(code, '*');
+        }, 69);
     }, [code]);
 
     return (
