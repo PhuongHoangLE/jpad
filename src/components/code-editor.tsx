@@ -12,7 +12,7 @@ import Highlighter from 'monaco-jsx-highlighter';
 
 interface CodeEditorProps {
     initialValue: string;
-    onChange(value: string | undefined): void;
+    onChange(value: string): void;
 }
 
 const CodeEditor: FC<CodeEditorProps> = ({ initialValue, onChange }) => {
@@ -33,7 +33,7 @@ const CodeEditor: FC<CodeEditorProps> = ({ initialValue, onChange }) => {
         editor?.setValue(formatted);
     };
     const onEditorChange = (value: string | undefined): void => {
-        onChange(value);
+        onChange(value || '');
         if (!editor) return;
         const highlighter = new Highlighter(
             monaco,
