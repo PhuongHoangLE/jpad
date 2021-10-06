@@ -3,10 +3,17 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 
 let initialized = false;
+let initializing = false;
 
 const bundle = async (rawCode: string) => {
+    if (initializing) {
+        return { code: '', error: '' };
+    }
+
     if (!initialized) {
+        initializing = true;
         await esbuild.initialize({ wasmURL: 'https://unpkg.com/esbuild-wasm@0.13.3/esbuild.wasm' });
+        initializing = false;
         initialized = true;
     }
 
@@ -23,7 +30,7 @@ const bundle = async (rawCode: string) => {
         });
         return { code: result.outputFiles[0].text, error: '' };
     } catch (error: any) {
-        return { error: error.message, code: '' };
+        return { code: '', error: error.message };
     }
 };
 
