@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as esbuild from 'esbuild-wasm';
 import localForage from 'localforage';
-import lets from '../../utils';
+import { removeFilename } from '../../utils';
 
 const fileCache = localForage.createInstance({
     name: 'filecache',
@@ -40,7 +40,7 @@ export const fetchPlugin = (inputCode: string | undefined) => {
 };
 
 async function cache(path: string, responseURL: string, contents: string) {
-    const resolveDir = lets.removeFilename(responseURL).pathname;
+    const resolveDir = removeFilename(responseURL).pathname;
     const result: esbuild.OnLoadResult = { loader: 'jsx', contents, resolveDir };
     await fileCache.setItem(path, result);
     return result;

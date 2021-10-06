@@ -5,12 +5,10 @@
  * extractDirectory('https://unpkg.com/my-pkg/index.js').pathname //-> /my-pkg/
  * @return {URL} A new URL with filename stripped off
  */
-function removeFilename(url: string): URL {
+export function removeFilename(url: string): URL {
     return new URL('./', url);
 }
 
-const lets = {
-    removeFilename,
-};
-
-export default lets;
+export function randomId() {
+    return Math.random().toString(36).substr(2, 5);
+}
