@@ -6,6 +6,7 @@ import { Cell } from '../state';
 import CodeEditor from './code-editor';
 import Preview from './preview';
 import Resizable from './resizable';
+import { useCumulativeCode } from '../hooks/use-cumulative-code';
 
 interface CodeCellProps {
     cell: Cell;
@@ -16,16 +17,17 @@ let everBundled = false;
 const CodeCell: FC<CodeCellProps> = ({ cell: { id, content } }) => {
     const { updateCell, createBundle } = useActions();
     const bundle = useTypedSelector(({ bundles }) => (bundles ? bundles[id] : undefined));
+    const cumulativeCode = useCumulativeCode(id);
 
     useEffect(() => {
         if (!everBundled) {
-            createBundle(id, content);
+            createBundle(id, cumulativeCode);
             everBundled = true;
             return;
         }
-        const timer = setTimeout(async () => createBundle(id, content), 1000);
+        const timer = setTimeout(async () => createBundle(id, cumulativeCode), 1000);
         return () => clearTimeout(timer);
-    }, [id, content, createBundle]);
+    }, [id, cumulativeCode, createBundle]);
 
     return (
         <Resizable direction="vertical">
