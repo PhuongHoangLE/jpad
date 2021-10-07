@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Dispatch } from 'react';
+import { RootState } from '..';
 import bundle from '../../bundler';
 import { ActionType } from '../action-types';
 import {
@@ -69,6 +70,24 @@ export const fetchCells = () => {
         } catch (error: any) {
             dispatch({
                 type: ActionType.FETCH_CELLS_ERROR,
+                payload: error.message,
+            });
+        }
+    };
+};
+
+export const saveCells = () => {
+    return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+        const { cells: cellsState } = getState();
+        if (!cellsState) return;
+        const { data, order } = cellsState;
+        const cells = order.map((id) => data[id]);
+
+        try {
+            await axios.post('./cells', { cells });
+        } catch (error: any) {
+            dispatch({
+                type: ActionType.SAVE_CELLS_ERROR,
                 payload: error.message,
             });
         }

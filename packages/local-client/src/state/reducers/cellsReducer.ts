@@ -34,6 +34,7 @@ const reducer = produce((state: CellsState = initialState, action: Action): Cell
             }, {} as CellsState['data']);
             break;
         case ActionType.FETCH_CELLS_ERROR:
+        case ActionType.SAVE_CELLS_ERROR:
             state.loading = false;
             state.error = action.payload;
             break;
