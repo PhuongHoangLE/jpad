@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Dispatch } from 'react';
 import bundle from '../../bundler';
 import { ActionType } from '../action-types';
@@ -9,7 +10,7 @@ import {
     MoveCellAction,
     UpdateCellAction,
 } from '../actions';
-import { CellType } from '../cell';
+import { Cell, CellType } from '../cell';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
     return {
@@ -52,5 +53,24 @@ export const createBundle = (id: string, input: string) => {
             type: ActionType.BUNDLE_COMPLETE,
             payload: { id, bundle: result },
         });
+    };
+};
+
+export const fetchCells = () => {
+    return async (dispatch: Dispatch<Action>) => {
+        dispatch({ type: ActionType.FETCH_CELLS });
+
+        try {
+            const { data }: { data: Cell[] } = await axios.get('/cells');
+            dispatch({
+                type: ActionType.FETCH_CELLS_COMPLETE,
+                payload: data,
+            });
+        } catch (error: any) {
+            dispatch({
+                type: ActionType.FETCH_CELLS_ERROR,
+                payload: error.message,
+            });
+        }
     };
 };
