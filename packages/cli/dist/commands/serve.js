@@ -43,6 +43,7 @@ exports.serveCommand = void 0;
 var commander_1 = require("commander");
 var local_api_1 = require("local-api");
 var path_1 = __importDefault(require("path"));
+var isProduction = process.env.NODE_ENV === 'production';
 exports.serveCommand = new commander_1.Command()
     .command('serve [filename]')
     .description('Open a file for editing')
@@ -50,29 +51,31 @@ exports.serveCommand = new commander_1.Command()
     .action(function (filename, options) {
     if (filename === void 0) { filename = 'notebook.js'; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var dir, error_1;
+        var portNumber, filenameOnly, dir, useProxy, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    portNumber = parseInt(options.port);
+                    filenameOnly = path_1.default.basename(filename);
                     dir = path_1.default.join(process.cwd(), path_1.default.dirname(filename));
-                    return [4 /*yield*/, (0, local_api_1.serve)(parseInt(options.port), path_1.default.basename(filename), dir)];
+                    useProxy = !isProduction;
+                    return [4 /*yield*/, (0, local_api_1.serve)(portNumber, filenameOnly, dir, useProxy)];
                 case 1:
                     _a.sent();
-                    console.log("'" + filename + "' is now served at http://localhost:" + options.port);
+                    console.info("'" + filename + "' is now served at http://localhost:" + options.port);
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
-                    if (error_1.code === 'EADDRINUSE') {
-                        console.log('Port is in use. Please try a different one.');
-                    }
-                    else {
-                        console.log(error_1.message);
-                    }
-                    process.exit(1);
+                    handleError(error_1);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     });
 });
+function handleError(error) {
+    var message = error.code === 'EADDRINUSE' ? 'Port is in use. Please try a different one.' : error.message;
+    console.error(message);
+    process.exit(1);
+}
