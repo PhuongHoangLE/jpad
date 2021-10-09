@@ -17,7 +17,7 @@ export const serve = (port: number, filename: string, dir: string, useProxy: boo
             })
         );
     } else {
-        const clientPath = require.resolve('local-client/build/index.html');
+        const clientPath = require.resolve('@jpad/local-client/build/index.html');
         const clientDir = path.dirname(clientPath);
         app.use(express.static(clientDir));
     }
