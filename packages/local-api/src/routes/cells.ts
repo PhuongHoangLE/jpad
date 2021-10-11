@@ -18,7 +18,8 @@ export const createCellsRouter = (filename: string, dir: string) => {
             res.send(JSON.parse(result));
         } catch (error: any) {
             if (error.code === 'ENOENT') {
-                await fs.writeFile(fullPath, '[]', 'utf-8');
+                const defaultCells = await fs.readFile('./jpad.js', { encoding: 'utf-8' });
+                await fs.writeFile(fullPath, defaultCells, 'utf-8');
                 res.send([]);
             } else {
                 throw error;

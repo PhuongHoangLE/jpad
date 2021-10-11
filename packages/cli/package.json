@@ -10,8 +10,9 @@
         "dist"
     ],
     "scripts": {
-        "start": "tsc --watch --preserveWatchOutput",
-        "prepublishOnly": "esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV=\\\"production\\\""
+        "copy-files": "cp src/jpad.js dist/jpad.js",
+        "start": "npm run copy-files && tsc --watch --preserveWatchOutput",
+        "prepublishOnly": "npm run copy-files && esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV=\\\"production\\\""
     },
     "keywords": [],
     "author": "",
