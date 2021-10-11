@@ -8,6 +8,7 @@ interface Cell {
     type: 'code' | 'text';
 }
 
+const UTF8 = 'utf-8';
 const defaultCells = [
     {
         content:
@@ -35,12 +36,12 @@ export const createCellsRouter = (filename: string, dir: string) => {
     const fullPath = path.join(dir, filename);
     router.get('/cells', async (req, res) => {
         try {
-            const result = await fs.readFile(fullPath, { encoding: 'utf-8' });
+            const result = await fs.readFile(fullPath, { encoding: UTF8 });
             res.send(JSON.parse(result));
         } catch (error: any) {
             if (error.code === 'ENOENT') {
-                await fs.writeFile(fullPath, JSON.stringify(defaultCells), 'utf-8');
-                res.send([]);
+                await fs.writeFile(fullPath, JSON.stringify(defaultCells), UTF8);
+                res.send(defaultCells);
             } else {
                 throw error;
             }
@@ -49,7 +50,7 @@ export const createCellsRouter = (filename: string, dir: string) => {
 
     router.post('/cells', async (req, res) => {
         const { cells }: { cells: Cell[] } = req.body;
-        await fs.writeFile(fullPath, JSON.stringify(cells), 'utf-8');
+        await fs.writeFile(fullPath, JSON.stringify(cells), UTF8);
         res.send({ status: 'ok' });
     });
 
