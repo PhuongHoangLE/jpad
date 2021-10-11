@@ -1,6 +1,6 @@
 {
     "name": "jpad",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "",
     "publishConfig": {
         "access": "public"
@@ -10,9 +10,8 @@
         "dist"
     ],
     "scripts": {
-        "copy-files": "cp src/jpad.js dist/jpad.js",
-        "start": "npm run copy-files && tsc --watch --preserveWatchOutput",
-        "prepublishOnly": "npm run copy-files && esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV=\\\"production\\\""
+        "start": "tsc --watch --preserveWatchOutput",
+        "prepublishOnly": "esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV=\\\"production\\\""
     },
     "keywords": [],
     "author": "",
@@ -21,7 +20,7 @@
         "@jpad/local-client": "^1.0.1"
     },
     "devDependencies": {
-        "@jpad/local-api": "^1.0.2",
+        "@jpad/local-api": "^1.0.3",
         "@types/node": "^16.10.3",
         "commander": "^8.2.0",
         "esbuild": "^0.13.4",
